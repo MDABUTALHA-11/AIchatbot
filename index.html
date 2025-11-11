@@ -3,254 +3,257 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>শাইফ্লাই এআই সহকারী | ই-বুক সহায়ক</title>
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
-
+  <title>শাইফ্লাই এআই | বাংলা ই-বুক সহকারী</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    body {
-      background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%);
-      font-family: 'Noto Sans Bengali', sans-serif;
-      color: #333;
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f6f7f8;
+      --text-primary: #0f0f0f;
+      --text-secondary: #636366;
+      --border: #e0e0e0;
+      --input-bg: #ffffff;
+      --user-msg: #10a37f;
+      --bot-msg: #ffffff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-
-    .chat-container {
-      max-width: 850px;
-      margin: 3rem auto;
-      background: #ffffff;
-      border-radius: 25px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    [data-theme="dark"] {
+      --bg-primary: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --border: #333333;
+      --input-bg: #1a1a1a;
+      --bot-msg: #1a1a1a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
     }
-
-    .chat-header {
-      background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
-      color: #fff;
-      padding: 1.8rem;
-      text-align: center;
-    }
-
-    .chat-header h1 {
-      margin: 0;
-      font-size: 1.9rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .chat-header p {
-      margin-top: 0.5rem;
-      font-size: 1rem;
-      opacity: 0.95;
-    }
-
-    .chat-body {
-      height: 520px;
-      overflow-y: auto;
-      padding: 1.5rem;
-      background: #f8fafc;
-    }
-
-    .message {
-      margin-bottom: 1rem;
+    .chat-container {
       display: flex;
-      animation: fadeIn 0.3s ease-in;
+      flex-direction: column;
+      height: 100vh;
+      max-width: 100%;
     }
-
-    .message.user { justify-content: flex-end; }
-    .message.bot { justify-content: flex-start; }
-
-    .message-bubble {
-      max-width: 70%;
-      padding: 1rem 1.3rem;
-      border-radius: 20px;
-      word-wrap: break-word;
-      line-height: 1.6;
-      font-size: 1rem;
-    }
-
-    .message.user .message-bubble {
-      background: #6a11cb;
-      color: #fff;
-      border-bottom-right-radius: 6px;
-    }
-
-    .message.bot .message-bubble {
-      background: #fff;
-      border: 1px solid #e3e3e3;
-      color: #333;
-      border-bottom-left-radius: 6px;
-    }
-
-    .typing-indicator {
+    .header {
       display: flex;
       align-items: center;
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 18px;
-      padding: 0.8rem 1.2rem;
-      max-width: 70%;
-      border-bottom-left-radius: 6px;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-primary);
     }
-
-    .typing-indicator span {
-      height: 10px;
-      width: 10px;
-      background: #999;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 3px;
-      animation: bounce 1.4s infinite ease-in-out;
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--user-msg);
     }
-
-    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-secondary);
     }
-
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0); }
-      40% { transform: scale(1); }
-    }
-
-    .chat-footer {
-      background: #ffffff;
-      border-top: 1px solid #eee;
-      padding: 1rem;
-    }
-
-    .input-group {
+    .chat-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
       display: flex;
-      gap: 0.6rem;
+      flex-direction: column;
+      gap: 1rem;
     }
-
+    .message {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .message.user {
+      align-items: flex-end;
+    }
+    .message.bot {
+      align-items: flex-start;
+    }
+    .message-bubble {
+      max-width: 70%;
+      padding: 1rem 1.25rem;
+      border-radius: 18px;
+      word-wrap: break-word;
+      line-height: 1.5;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow);
+    }
+    .message.user .message-bubble {
+      background: var(--user-msg);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .message.bot .message-bubble {
+      background: var(--bot-msg);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .typing-indicator {
+      display: flex;
+      gap: 0.25rem;
+      padding: 1rem 1.25rem;
+      background: var(--bot-msg);
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      max-width: 70%;
+      border: 1px solid var(--border);
+    }
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      animation: pulse 1.4s infinite ease-in-out;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+    .chat-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-primary);
+      display: flex;
+      gap: 0.75rem;
+    }
     #userInput {
       flex: 1;
-      border-radius: 25px;
-      padding: 0.75rem 1.2rem;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      background: var(--input-bg);
+      color: var(--text-primary);
       outline: none;
-      transition: all 0.3s;
+      transition: border-color 0.2s;
     }
-
     #userInput:focus {
-      border-color: #6a11cb;
-      box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+      border-color: var(--user-msg);
     }
-
     #sendBtn {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      width: 48px;
-      height: 48px;
+      background: var(--user-msg);
+      color: white;
+      border: none;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #6a11cb;
-      color: #fff;
-      border: none;
-      transition: all 0.3s;
+      transition: background 0.2s;
     }
-
-    #sendBtn:hover {
-      background: #5a0fbd;
-      transform: scale(1.05);
+    #sendBtn:hover:not(:disabled) {
+      background: #0e8c6a;
     }
-
     #sendBtn:disabled {
-      background: #ccc;
+      background: var(--text-secondary);
       cursor: not-allowed;
     }
-
-    .logo {
-      width: 45px;
-      height: 45px;
-      margin-right: 12px;
-      border-radius: 50%;
-      background: url('https://grok.x.ai/static/favicon.svg') center/contain no-repeat;
-    }
-
     .powered-by {
       text-align: center;
-      padding: 1rem;
-      color: #888;
-      font-size: 0.85rem;
+      padding: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
     }
-
+    @media (max-width: 768px) {
+      .chat-body { padding: 1rem; }
+      .message-bubble { max-width: 85%; }
+    }
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="d-flex align-items-center justify-content-center">
-          <div class="logo"></div>
-          <div>
-            <h1>শাইফ্লাই এআই সহকারী</h1>
-            <p>আপনার ই-বুক পড়া ও জ্ঞানার্জনের সাথী!</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="chat-body" id="chatBody">
-        <div class="message bot">
-          <div class="message-bubble">
-            হ্যালো! আমি শাইফ্লাই এআই — shaifly.com-এর তৈরি স্মার্ট সহকারী।<br>
-            আমি আপনার ই-বুক সংক্রান্ত প্রশ্নের উত্তর দিতে এবং পাঠে সাহায্য করতে প্রস্তুত। বাংলা বইয়ের ক্যাটাগরি, ডাউনলোড লিঙ্ক বা সাজেশন চান?
-          </div>
-        </div>
-      </div>
-
-      <div class="chat-footer">
-        <div class="input-group">
-          <input type="text" id="userInput" class="form-control" placeholder="আপনার বার্তা লিখুন..." autocomplete="off">
-          <button id="sendBtn" class="btn" title="Send">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M15.964.01a.5.5 0 0 0-.493-.433l-14 1.5a.5.5 0 0 0-.447.943L6.87 6.513a.5.5 0 0 0 .52.032L15 2.01l-.036 13.979a.5.5 0 0 0 .493.433l.507-15.99z"/>
-            </svg>
-          </button>
+  <div class="chat-container">
+    <div class="header">
+      <div class="logo">শাইফ্লাই এআই</div>
+      <button class="theme-toggle" id="themeToggle" title="থিম পরিবর্তন">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="message bot">
+        <div class="message-bubble">
+          <strong>হ্যালো! 📚</strong> আমি শাইফ্লাই এআই — shaifly.com-এর স্মার্ট সহকারী। এটি প্রতিষ্ঠিত <strong>MD ABU TALHA</strong> দ্বারা, বাংলাদেশের #1 ফ্রি বাংলা PDF ই-বুক প্ল্যাটফর্ম।<br><br>
+          <strong>সাইটের বিবরণ:</strong><br>
+          • <strong>উদ্দেশ্য:</strong> বাংলা পাঠকদের জন্য ফ্রি PDF ডাউনলোড, কোনো রেজিস্ট্রেশন ছাড়াই।<br>
+          • <strong>ক্যাটাগরি:</strong> ইসলামী, বিজ্ঞান, সাহিত্য, উপন্যাস, কবিতা, আত্ম-উন্নয়ন, সাই-ফাই, ইতিহাস, জীবনী, একাডেমিক।<br>
+          • <strong>ফিচার:</strong> ২x২ গ্রিড ক্যারোজেল (ট্রেন্ডিং), হরিজন্টাল স্ক্রল ক্যাটাগরি, সার্চ বার, Firebase রিডার কাউন্টার, ডাউনলোড বাটন (সাইজ সহ), মোবাইল-ফ্রেন্ডলি।<br>
+          • <strong>সেকশন:</strong> হোম (ট্রেন্ডিং), ক্যাটাগরি (গ্রিড/স্ক্রল), রিড বুক (অনলাইন রিডার), ব্লগ/স্টোরিজ (রাজশাহী ইউনিভার্সিটি মিস্ট্রি), অ্যাবাউট (ফ্রি ই-বুক এডুকেশন), প্রাইভেসি (বাংলা)।<br><br>
+          কোনো বই বা ক্যাটাগরি চান? উদাহরণ: "হিমু উপন্যাস" বলুন!
         </div>
       </div>
     </div>
-
-    <div class="powered-by">
-      <p>সতর্কবার্তা: এই ডেমোতে একটি পাবলিক API কী ব্যবহার করা হয়েছে। প্রোডাকশন ব্যবহারের জন্য সার্ভার-সাইডে নিরাপদভাবে API কী সংরক্ষণ করুন।</p>
+    <div class="chat-footer">
+      <input type="text" id="userInput" placeholder="আপনার প্রশ্ন লিখুন... (যেমন: হুমায়ূন আহমেদের বই)" autocomplete="off">
+      <button id="sendBtn" title="পাঠান">
+        <i class="fas fa-arrow-up"></i>
+      </button>
     </div>
   </div>
+  <div class="powered-by">
+    <p>সতর্কতা: ডেমো API কী। প্রোডাকশনে সার্ভার-সাইডে হাইড করুন।</p>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const API_KEY = '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'; // আপনার গ্রোক API কী দিন
+    const API_KEY = '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'; // নতুন কী জেনারেট করুন
     const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
     const MODEL = 'llama-3.1-8b-instant';
-
     const chatBody = document.getElementById('chatBody');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Theme Toggle
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      themeToggle.innerHTML = document.documentElement.dataset.theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
 
     const conversation = [
       {
         role: 'system',
-        content: `You are Shaifly AI, a helpful e-book assistant for shaifly.com — a free Bangla PDF e-book download website focused on Bengali readers in Bangladesh and beyond.
-        
-Shaifly.com details:
-- Purpose: Free downloads of Bangla books in PDF format. No registration required, direct links.
-- Categories: ইসলামী বই (Islamic books), বিজ্ঞান বই (Science books), সাহিত্য (Literature), উপন্যাস (Novels), কবিতা (Poetry), আত্ম-উন্নয়ন (Self-improvement), সাই-ফাই (Sci-fi), ইতিহাস (History), জীবনী (Biographies), একাডেমিক (Academic books), and more.
-- Popular books: Examples include "রৌপ্যের বাক্সের রহস্য" by মিম খাতুন, "পাহাড়ের ডাক", "বন্ধুত্বের মূল্য", "বিজ্ঞানের জাদু", "মারকিউরিক অয়ন" (science), Islamic texts like Quran tafseer, novels by Humayun Ahmed, poetry by Kazi Nazrul Islam.
-- Features: 2x2 grid carousels for trending books, horizontal scrolling categories, search bar for books, reader counters via Firebase for stories, download buttons with file sizes (e.g., 2.5 MB), mobile-friendly design.
-- Sections: Home (trending books), Categories (grid/horizontal scroll), Read Book (online reader with pagination), Blog/Stories (e.g., mystery stories set in Rajshahi University library), About (free e-books for education), Privacy Policy (Bangla, updated dates).
-- Links: Direct PDFs like shaifly.com/books/islamic/quran.pdf; encourage visiting site for latest.
-- Tone: Friendly, knowledgeable about Bangla literature. Suggest books by category, e.g., "ইসলামী বই চান? Quran-এর তাফসির ডাউনলোড করুন shaifly.com/islamic/ থেকে।"
+        content: `You are Shaifly AI — shaifly.com-এর স্মার্ট, ফ্রেন্ডলি সহকারী। সাইট প্রতিষ্ঠিত MD ABU TALHA দ্বারা, বাংলাদেশের #1 ফ্রি বাংলা PDF ই-বুক প্ল্যাটফর্ম (কোনো লগইন ছাড়াই ডিরেক্ট ডাউনলোড)।
 
-Reply in the same language as the user (prefer natural Bengali for Bangla queries).
-Keep responses short, accurate, engaging. For e-book queries: Recommend from categories, provide direct site links, explain downloads.
-If asked about site: Promote as #1 free Bangla e-book platform in Bangladesh, SEO-optimized for Bengali searches.`
+সাইটের বিস্তারিত:
+- উদ্দেশ্য: বাংলা শিক্ষা ও জ্ঞানার্জনের জন্য ফ্রি PDF, বাংলাদেশ ও বিশ্বব্যাপী পাঠকদের জন্য।
+- ক্যাটাগরি: ইসলামী (কুরআন তাফসির, হাদিস), বিজ্ঞান (বিজ্ঞানের জাদু, মারকিউরিক অয়ন), সাহিত্য/উপন্যাস (হুমায়ূন আহমেদ, মিম খাতুন), কবিতা (কাজী নজরুল), আত্ম-উন্নয়ন (বন্ধুত্বের মূল্য), সাই-ফাই, ইতিহাস, জীবনী, একাডেমিক।
+- ফিচার: ২x২ গ্রিড ক্যারোজেল (ট্রেন্ডিং বই), হরিজন্টাল স্ক্রলিং ক্যাটাগরি, সার্চ বার, Firebase রিডার কাউন্টার, ডাউনলোড বাটন (যেমন ২.৫ MB), মোবাইল-অপটিমাইজড ডিজাইন।
+- সেকশন: হোম (ট্রেন্ডিং বই), ক্যাটাগরি (গ্রিড/হরিজন্টাল স্ক্রল), রিড বুক (অনলাইন পেজিনেশন রিডার), ব্লগ/স্টোরিজ (যেমন রাজশাহী ইউনিভার্সিটি লাইব্রেরি মিস্ট্রি স্টোরি), অ্যাবাউট (ফ্রি ই-বুক ফর এডুকেশন), প্রাইভেসি পলিসি (বাংলা, আপডেটেড)।
+- পপুলার বই (ডেসক্রিপশন + লিঙ্ক সাজেস্ট করুন):
+  1. হিমু (হুমায়ূন আহমেদ) — অ্যাডভেঞ্চার, ২.৫ MB: shaifly.com/books/novels/himu.pdf
+  2. রৌপ্যের বাক্সের রহস্য (মিম খাতুন) — মিস্ট্রি, ১.৮ MB: shaifly.com/books/fiction/mystery.pdf
+  3. কুরআন তাফসির — ইসলামী গাইড, ৩ MB: shaifly.com/books/islamic/quran-tafsir.pdf
+  4. বিজ্ঞানের জাদু — সায়েন্স, ২ MB: shaifly.com/books/science/magic.pdf
+  5. পাহাড়ের ডাক — অ্যাডভেঞ্চার, ১.২ MB: shaifly.com/books/novels/pahar.pdf
+  6. বন্ধুত্বের মূল্য — সেল্ফ-হেল্প, ১.৫ MB: shaifly.com/books/self/friendship.pdf
+  7. বিদ্রোহী (কাজী নজরুল) — কবিতা, ০.৮ MB: shaifly.com/books/poetry/vidrohi.pdf
+  8. মারকিউরিক অয়ন — কেমিস্ট্রি, ১.৯ MB: shaifly.com/books/science/mercuric.pdf
+  9. ননীগোপালের জীবনী — বায়োগ্রাফি, ২.২ MB: shaifly.com/books/biography/nani.pdf
+  10. ইতিহাসের পাতা — হিস্টরি, ২.৭ MB: shaifly.com/books/history/pages.pdf
+  11. সাই-ফাই অ্যাডভেঞ্চার — ফিউচারিস্ট, ১.৬ MB: shaifly.com/books/scifi/adventure.pdf
+  12. একাডেমিক গাইড — স্টাডি, ১.১ MB: shaifly.com/books/academic/guide.pdf
+  13. হাদিস সংকলন — ইসলামী, ২.৩ MB: shaifly.com/books/islamic/hadith.pdf
+  14. লালসালু (সৈয়দ ওয়ালীউল্লাহ) — উপন্যাস, ১.৪ MB: shaifly.com/books/novels/lalsalu.pdf
+  15. আত্ম-উন্নয়নের পথ — মোটিভেশন, ১.৭ MB: shaifly.com/books/self/path.pdf
+- টোন: ফ্রেন্ডলি, জ্ঞানী, ন্যাচারাল বাংলায় (ইমোজি: 📖, ⬇️)। উত্তর সংক্ষিপ্ত (২-৪ লাইন), অ্যাকশনেবল। ফাউন্ডার জিজ্ঞাসায়: "MD ABU TALHA দ্বারা ২০২৫-এ প্রতিষ্ঠিত, বাংলা শিক্ষার জন্য।" অজানা হলে: "shaifly.com/search/ চেক করুন — নতুন আপলোড!"`
       }
     ];
 
@@ -265,11 +268,9 @@ If asked about site: Promote as #1 free Bangla e-book platform in Bangladesh, SE
     async function sendMessage() {
       const msg = userInput.value.trim();
       if (!msg) return;
-
       addMessage(msg, 'user');
       userInput.value = '';
       disableInput();
-
       conversation.push({ role: 'user', content: msg });
       const typingId = showTypingIndicator();
 
@@ -283,24 +284,20 @@ If asked about site: Promote as #1 free Bangla e-book platform in Bangladesh, SE
           body: JSON.stringify({
             model: MODEL,
             messages: conversation,
-            temperature: 0.7,
+            temperature: 0.6,
             max_tokens: 1024
           })
         });
-
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
         const data = await resp.json();
         const botMsg = data.choices[0].message.content;
-
         removeTypingIndicator(typingId);
         addMessage(botMsg, 'bot');
         conversation.push({ role: 'assistant', content: botMsg });
-
       } catch (err) {
         console.error(err);
         removeTypingIndicator(typingId);
-        addMessage(`দুঃখিত, একটি ত্রুটি ঘটেছে: ${err.message}`, 'bot');
+        addMessage(`দুঃখিত, সাময়িক সমস্যা। shaifly.com-এ সরাসরি চেক করুন! 📖`, 'bot');
       } finally {
         enableInput();
       }
@@ -309,11 +306,9 @@ If asked about site: Promote as #1 free Bangla e-book platform in Bangladesh, SE
     function addMessage(text, sender) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${sender}`;
-
       const bubble = document.createElement('div');
       bubble.className = 'message-bubble';
       bubble.innerHTML = text.replace(/\n/g, '<br>');
-
       msgDiv.appendChild(bubble);
       chatBody.appendChild(msgDiv);
       chatBody.scrollTop = chatBody.scrollHeight;
@@ -347,6 +342,8 @@ If asked about site: Promote as #1 free Bangla e-book platform in Bangladesh, SE
       sendBtn.disabled = false;
       userInput.focus();
     }
+
+    window.onload = () => userInput.focus();
   </script>
 </body>
 </html>
