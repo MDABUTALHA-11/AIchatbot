@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>শাইফ্লাই এআই সহকারী | ই-বুক সহায়ক</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%);
+      font-family: 'Noto Sans Bengali', sans-serif;
+      color: #333;
+    }
+
+    .chat-container {
+      max-width: 850px;
+      margin: 3rem auto;
+      background: #ffffff;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+      color: #fff;
+      padding: 1.8rem;
+      text-align: center;
+    }
+
+    .chat-header h1 {
+      margin: 0;
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .chat-header p {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+
+    .chat-body {
+      height: 520px;
+      overflow-y: auto;
+      padding: 1.5rem;
+      background: #f8fafc;
+    }
+
+    .message {
+      margin-bottom: 1rem;
+      display: flex;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .message.user { justify-content: flex-end; }
+    .message.bot { justify-content: flex-start; }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 1rem 1.3rem;
+      border-radius: 20px;
+      word-wrap: break-word;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .message.user .message-bubble {
+      background: #6a11cb;
+      color: #fff;
+      border-bottom-right-radius: 6px;
+    }
+
+    .message.bot .message-bubble {
+      background: #fff;
+      border: 1px solid #e3e3e3;
+      color: #333;
+      border-bottom-left-radius: 6px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 18px;
+      padding: 0.8rem 1.2rem;
+      max-width: 70%;
+      border-bottom-left-radius: 6px;
+    }
+
+    .typing-indicator span {
+      height: 10px;
+      width: 10px;
+      background: #999;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 3px;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    .chat-footer {
+      background: #ffffff;
+      border-top: 1px solid #eee;
+      padding: 1rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    #userInput {
+      flex: 1;
+      border-radius: 25px;
+      padding: 0.75rem 1.2rem;
+      border: 1px solid #ddd;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    #userInput:focus {
+      border-color: #6a11cb;
+      box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+    }
+
+    #sendBtn {
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #6a11cb;
+      color: #fff;
+      border: none;
+      transition: all 0.3s;
+    }
+
+    #sendBtn:hover {
+      background: #5a0fbd;
+      transform: scale(1.05);
+    }
+
+    #sendBtn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .logo {
+      width: 45px;
+      height: 45px;
+      margin-right: 12px;
+      border-radius: 50%;
+      background: url('https://grok.x.ai/static/favicon.svg') center/contain no-repeat;
+    }
+
+    .powered-by {
+      text-align: center;
+      padding: 1rem;
+      color: #888;
+      font-size: 0.85rem;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="d-flex align-items-center justify-content-center">
+          <div class="logo"></div>
+          <div>
+            <h1>শাইফ্লাই এআই সহকারী</h1>
+            <p>আপনার ই-বুক পড়া ও জ্ঞানার্জনের সাথী!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+        <div class="message bot">
+          <div class="message-bubble">
+            হ্যালো! আমি শাইফ্লাই এআই — shaifly.com-এর তৈরি স্মার্ট সহকারী।<br>
+            আমি আপনার ই-বুক সংক্রান্ত প্রশ্নের উত্তর দিতে এবং পাঠে সাহায্য করতে প্রস্তুত। বাংলা বইয়ের ক্যাটাগরি, ডাউনলোড লিঙ্ক বা সাজেশন চান?
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-footer">
+        <div class="input-group">
+          <input type="text" id="userInput" class="form-control" placeholder="আপনার বার্তা লিখুন..." autocomplete="off">
+          <button id="sendBtn" class="btn" title="Send">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M15.964.01a.5.5 0 0 0-.493-.433l-14 1.5a.5.5 0 0 0-.447.943L6.87 6.513a.5.5 0 0 0 .52.032L15 2.01l-.036 13.979a.5.5 0 0 0 .493.433l.507-15.99z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="powered-by">
+      <p>সতর্কবার্তা: এই ডেমোতে একটি পাবলিক API কী ব্যবহার করা হয়েছে। প্রোডাকশন ব্যবহারের জন্য সার্ভার-সাইডে নিরাপদভাবে API কী সংরক্ষণ করুন।</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_KEY = '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'; // আপনার গ্রোক API কী দিন
+    const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+    const MODEL = 'llama-3.1-8b-instant';
+
+    const chatBody = document.getElementById('chatBody');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    const conversation = [
+      {
+        role: 'system',
+        content: `You are Shaifly AI, a helpful e-book assistant for shaifly.com — a free Bangla PDF e-book download website focused on Bengali readers in Bangladesh and beyond.
+        
+Shaifly.com details:
+- Purpose: Free downloads of Bangla books in PDF format. No registration required, direct links.
+- Categories: ইসলামী বই (Islamic books), বিজ্ঞান বই (Science books), সাহিত্য (Literature), উপন্যাস (Novels), কবিতা (Poetry), আত্ম-উন্নয়ন (Self-improvement), সাই-ফাই (Sci-fi), ইতিহাস (History), জীবনী (Biographies), একাডেমিক (Academic books), and more.
+- Popular books: Examples include "রৌপ্যের বাক্সের রহস্য" by মিম খাতুন, "পাহাড়ের ডাক", "বন্ধুত্বের মূল্য", "বিজ্ঞানের জাদু", "মারকিউরিক অয়ন" (science), Islamic texts like Quran tafseer, novels by Humayun Ahmed, poetry by Kazi Nazrul Islam.
+- Features: 2x2 grid carousels for trending books, horizontal scrolling categories, search bar for books, reader counters via Firebase for stories, download buttons with file sizes (e.g., 2.5 MB), mobile-friendly design.
+- Sections: Home (trending books), Categories (grid/horizontal scroll), Read Book (online reader with pagination), Blog/Stories (e.g., mystery stories set in Rajshahi University library), About (free e-books for education), Privacy Policy (Bangla, updated dates).
+- Links: Direct PDFs like shaifly.com/books/islamic/quran.pdf; encourage visiting site for latest.
+- Tone: Friendly, knowledgeable about Bangla literature. Suggest books by category, e.g., "ইসলামী বই চান? Quran-এর তাফসির ডাউনলোড করুন shaifly.com/islamic/ থেকে।"
+
+Reply in the same language as the user (prefer natural Bengali for Bangla queries).
+Keep responses short, accurate, engaging. For e-book queries: Recommend from categories, provide direct site links, explain downloads.
+If asked about site: Promote as #1 free Bangla e-book platform in Bangladesh, SEO-optimized for Bengali searches.`
+      }
+    ];
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    async function sendMessage() {
+      const msg = userInput.value.trim();
+      if (!msg) return;
+
+      addMessage(msg, 'user');
+      userInput.value = '';
+      disableInput();
+
+      conversation.push({ role: 'user', content: msg });
+      const typingId = showTypingIndicator();
+
+      try {
+        const resp = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: MODEL,
+            messages: conversation,
+            temperature: 0.7,
+            max_tokens: 1024
+          })
+        });
+
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+        const data = await resp.json();
+        const botMsg = data.choices[0].message.content;
+
+        removeTypingIndicator(typingId);
+        addMessage(botMsg, 'bot');
+        conversation.push({ role: 'assistant', content: botMsg });
+
+      } catch (err) {
+        console.error(err);
+        removeTypingIndicator(typingId);
+        addMessage(`দুঃখিত, একটি ত্রুটি ঘটেছে: ${err.message}`, 'bot');
+      } finally {
+        enableInput();
+      }
+    }
+
+    function addMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}`;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.innerHTML = text.replace(/\n/g, '<br>');
+
+      msgDiv.appendChild(bubble);
+      chatBody.appendChild(msgDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const div = document.createElement('div');
+      div.className = 'message bot';
+      div.id = 'typing-indicator';
+      const ind = document.createElement('div');
+      ind.className = 'typing-indicator';
+      ind.innerHTML = '<span></span><span></span><span></span>';
+      div.appendChild(ind);
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return div.id;
+    }
+
+    function removeTypingIndicator() {
+      const el = document.getElementById('typing-indicator');
+      if (el) el.remove();
+    }
+
+    function disableInput() {
+      userInput.disabled = true;
+      sendBtn.disabled = true;
+    }
+
+    function enableInput() {
+      userInput.disabled = false;
+      sendBtn.disabled = false;
+      userInput.focus();
+    }
+  </script>
+</body>
+</html>
