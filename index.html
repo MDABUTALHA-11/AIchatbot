@@ -5,22 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>শাইফ্লাই এআই - Chat with a Legend</title>
 
-  <!-- Bootstrap 5 CSS -->
+  <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg: #ffffff;
-      --text: #0f0f0f;
+      --text: #1a1a1a;
       --user-bg: #10a37f;
-      --bot-bg: #f0f0f0;
-      --border: #e5e7eb;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --bot-bg: #f7f7f8;
+      --border: #e0e0e0;
       --primary: #10a37f;
+      --radius: 18px;
     }
     [data-theme="dark"] {
       --bg: #0d1117;
@@ -28,7 +26,6 @@
       --user-bg: #23856d;
       --bot-bg: #161b22;
       --border: #30363d;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       --primary: #58a6ff;
     }
 
@@ -38,7 +35,6 @@
       background: var(--bg);
       color: var(--text);
       height: 100vh;
-      margin: 0;
       overflow: hidden;
     }
 
@@ -46,139 +42,105 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
+      border: 1px solid var(--border);
       background: var(--bg);
-      border-left: 1px solid var(--border);
-      border-right: 1px solid var(--border);
-      overflow: hidden;
     }
 
+    /* Header */
     .header {
       padding: 1rem 1.5rem;
       border-bottom: 1px solid var(--border);
-      background: var(--bg);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-shrink: 0;
     }
-    .logo {
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: var(--primary);
-    }
-    .theme-toggle, .back-home-btn {
-      background: none;
-      border: none;
+    .logo { font-weight: 700; font-size: 1.4rem; color: var(--primary); }
+    .back-home-btn, .theme-toggle {
+      background: transparent;
+      border: 1.5px solid var(--border);
       color: var(--text);
-      font-size: 1.1rem;
-      cursor: pointer;
-      padding: 0.5rem 0.75rem;
-      border-radius: 8px;
-      transition: all 0.2s;
-      font-weight: 500;
-    }
-    .back-home-btn {
-      background: var(--primary);
-      color: white;
-      font-size: 0.95rem;
       padding: 0.5rem 1rem;
-    }
-    .back-home-btn:hover {
-      background: #0e8c6a;
-    }
-
-    /* Front Page */
-    .front-page {
-      flex: 1;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      text-align: center;
-      padding: 2rem 1rem;
-      overflow-y: auto;
+      gap: 0.5rem;
     }
-    .front-title {
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, #10a37f, #1e40af);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .front-subtitle {
-      font-size: 1.05rem;
-      margin-bottom: 2.5rem;
-      opacity: 0.85;
-    }
+    .back-home-btn { background: var(--primary); color: white; border: none; }
 
+    /* Character Cards */
+    .scroll-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+    .scroll-inner {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 0 0.5rem;
+      scrollbar-width: none;
+    }
+    .scroll-inner::-webkit-scrollbar { display: none; }
     .character-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+      flex: 0 0 240px;
+      background: var(--card-bg, var(--bg));
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
       overflow: hidden;
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: var(--shadow);
-      height: 100%;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .character-card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-6px);
       border-color: var(--primary);
-      box-shadow: 0 12px 24px rgba(16, 163, 127, 0.25);
     }
     .character-img {
       width: 100%;
-      height: 300px; /* আরও বড় করা হয়েছে */
+      height: 280px;
       object-fit: cover;
-      border-bottom: 1px solid var(--border);
     }
     .character-info {
-      padding: 1.3rem;
+      padding: 1rem;
       text-align: center;
     }
-    .character-name {
-      font-weight: 600;
-      font-size: 1.2rem;
-      margin-bottom: 0.4rem;
-    }
-    .character-role {
-      font-size: 0.95rem;
-      opacity: 0.8;
-    }
+    .character-name { font-weight: 600; font-size: 1.1rem; }
+    .character-role { font-size: 0.9rem; opacity: 0.8; }
 
     /* Chat Body */
     .chat-body {
       flex: 1;
       overflow-y: auto;
-      padding: 1rem;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
     .message {
       display: flex;
-      align-items: flex-start;
-      gap: 0.8rem;
-      max-width: 85%;
+      gap: 12px;
+      max-width: 78%;
+      animation: fadeIn 0.3s ease;
     }
-    .message.user {
-      align-self: flex-end;
-      flex-direction: row-reverse;
-    }
-    .message.bot {
-      align-self: flex-start;
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .message.bot { align-self: flex-start; }
+
     .message-bubble {
-      padding: 1rem 1.2rem;
-      border-radius: 22px;
-      font-size: 1rem;
+      padding: 0.9rem 1.2rem;
+      border-radius: var(--radius);
+      font-size: 1.02rem;
       line-height: 1.6;
-      max-width: 100%;
       word-wrap: break-word;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      max-width: 100%;
+      min-width: 50px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .message.user .message-bubble {
       background: var(--user-bg);
@@ -192,109 +154,90 @@
       border-bottom-left-radius: 4px;
     }
     .character-avatar {
-      width: 100px;   /* আরও বড় করা হয়েছে */
-      height: 100px;  /* আরও বড় করা হয়েছে */
-      border-radius: 16px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
       object-fit: cover;
-      border: 3px solid var(--border);
+      border: 2px solid var(--border);
       flex-shrink: 0;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
 
+    /* Typing Indicator */
     .typing-indicator {
       display: flex;
-      gap: 7px;
-      padding: 1rem 1.2rem;
+      gap: 6px;
+      padding: 0.9rem 1.2rem;
       background: var(--bot-bg);
-      border-radius: 22px;
+      border-radius: var(--radius);
       border: 1px solid var(--border);
-      max-width: 85px;
+      width: fit-content;
     }
     .typing-indicator span {
-      width: 10px; height: 10px;
-      background: #888;
+      width: 8px; height: 8px;
+      background: #999;
       border-radius: 50%;
       animation: pulse 1.2s infinite;
     }
     .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
     .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes pulse {
-      0%, 100% { opacity: 0.4; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1); }
+      0%, 100% { transform: scale(0.8); opacity: 0.5; }
+      50% { transform: scale(1); opacity: 1; }
     }
 
+    /* Input */
     .chat-footer {
-      padding: 0.75rem 1rem;
-      border-top: 1px solid var(--border);
+      padding: 1rem 1.5rem;
       background: var(--bg);
+      border-top: 1px solid var(--border);
       display: flex;
-      gap: 0.6rem;
+      gap: 0.8rem;
       align-items: center;
-      flex-shrink: 0;
     }
     #userInput {
       flex: 1;
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      padding: 0.75rem 1.2rem;
-      font-size: 0.98rem;
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
       background: var(--bg);
       color: var(--text);
       outline: none;
     }
     #userInput:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.25);
+      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.15);
     }
     #sendBtn {
-      width: 46px; height: 46px;
+      width: 48px; height: 48px;
       border-radius: 50%;
       background: var(--primary);
       color: white;
       border: none;
+      font-size: 1.2rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.15rem;
     }
-    #sendBtn:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
-
-    .powered-by {
-      text-align: center;
-      padding: 0.5rem;
-      font-size: 0.75rem;
-      color: var(--text);
-      opacity: 0.7;
-      background: var(--bg);
-    }
+    #sendBtn:disabled { background: #ccc; cursor: not-allowed; }
 
     .hidden { display: none; }
+    .powered-by { text-align: center; padding: 0.5rem; font-size: 0.7rem; opacity: 0.6; }
 
-    /* Mobile Optimizations */
     @media (max-width: 576px) {
-      .front-title { font-size: 2rem; }
-      .character-img { height: 160px; }
-      .character-avatar { width: 50px; height: 50px; }
       .message { max-width: 92%; }
-      .chat-body { padding: 0.75rem; }
-      .chat-footer { padding: 0.5rem; }
-      #userInput { font-size: 0.92rem; padding: 0.7rem 1rem; }
-      .header { padding: 0.8rem 1rem; }
-      .back-home-btn { font-size: 0.9rem; padding: 0.4rem 0.8rem; }
+      .character-card { flex: 0 0 200px; }
+      .character-img { height: 220px; }
     }
   </style>
 </head>
 <body>
 
   <div class="chat-container">
-    <!-- Header -->
     <div class="header">
       <button class="back-home-btn hidden" id="backHome" onclick="goHome()">
-        হোমে ফিরুন
+        <i class="fas fa-home"></i> হোম
       </button>
       <div class="logo">শাইফ্লাই এআই</div>
       <button class="theme-toggle" id="themeToggle">
@@ -302,203 +245,216 @@
       </button>
     </div>
 
-    <!-- Front Page -->
-    <div id="frontPage" class="front-page">
-      <h1 class="front-title">Chat with a Legend</h1>
-      <p class="front-subtitle">ইতিহাস, বিজ্ঞান, সাহিত্য — যেকোনো বিষয়ে কথা বলুন</p>
-      <div class="row g-3 justify-content-center">
-        <div class="col-6 col-md-4">
-          <div class="character-card" onclick="selectCharacter('ibn_khaldun')">
-            <img src="Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg" alt="ইবনে খালদুন" class="character-img" onerror="this.src='https://via.placeholder.com/300x200?text=ইবনে+খালদুন'">
-            <div class="character-info">
-              <div class="character-name">ইবনে খালদুন</div>
-              <div class="character-role">ইসলামী জ্ঞান ও ইতিহাস</div>
-            </div>
+    <!-- Character Selection -->
+    <div id="scrollContainer" class="scroll-container">
+      <div class="scroll-inner">
+        <div class="character-card" onclick="selectCharacter('ibn_khaldun')">
+          <img src="./Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg" alt="ইবনে খালদুন" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=ইবনে+খালদুন'">
+          <div class="character-info">
+            <div class="character-name">ইবনে খালদুন</div>
+            <div class="character-role">ইসলামী জ্ঞান</div>
           </div>
         </div>
-        <div class="col-6 col-md-4">
-          <div class="character-card" onclick="selectCharacter('einstein')">
-            <img src="Image/dreamina-2025-11-11-4854-Albert Einestine.jpeg" alt="আইনস্টাইন" class="character-img" onerror="this.src='https://via.placeholder.com/300x200?text=আইনস্টাইন'">
-            <div class="character-info">
-              <div class="character-name">আলবার্ট আইনস্টাইন</div>
-              <div class="character-role">বিজ্ঞান ও পদার্থবিদ্যা</div>
-            </div>
+        <div class="character-card" onclick="selectCharacter('einstein')">
+          <img src="./Image/dreamina-2025-11-11-4854-Albert Einestine.jpeg" alt="আইনস্টাইন" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=আইনস্টাইন'">
+          <div class="character-info">
+            <div class="character-name">আলবার্ট আইনস্টাইন</div>
+            <div class="character-role">বিজ্ঞান</div>
           </div>
         </div>
-        <div class="col-6 col-md-4">
-          <div class="character-card" onclick="selectCharacter('nazrul')">
-            <img src="Image/download (18).jpeg" alt="নজরুল" class="character-img" onerror="this.src='https://via.placeholder.com/300x200?text=নজরুল'">
-            <div class="character-info">
-              <div class="character-name">কাজী নজরুল ইসলাম</div>
-              <div class="character-role">কবিতা ও বিদ্রোহ</div>
-            </div>
+        <div class="character-card" onclick="selectCharacter('nazrul')">
+          <img src="./Image/download (18).jpeg" alt="নজরুল" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=নজরুল'">
+          <div class="character-info">
+            <div class="character-name">কাজী নজরুল</div>
+            <div class="character-role">কবিতা</div>
+          </div>
+        </div>
+        <div class="character-card" onclick="selectCharacter('tagore')">
+          <img src="./Image/Rabindranath_Tagore.jpg" alt="রবীন্দ্রনাথ" class="character-img">
+          <div class="character-info">
+            <div class="character-name">রবীন্দ্রনাথ ঠাকুর</div>
+            <div class="character-role">সাহিত্য</div>
+          </div>
+        </div>
+        <div class="character-card" onclick="selectCharacter('tesla')">
+          <img src="./Image/9a8705edec069075e76304473332db21.jpg" alt="টেসলা" class="character-img">
+          <div class="character-info">
+            <div class="character-name">নিকোলা টেসলা</div>
+            <div class="character-role">আবিষ্কার</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Chat Body -->
+    <!-- Chat -->
     <div id="chatBody" class="chat-body hidden"></div>
 
-    <!-- Footer -->
+    <!-- Input -->
     <div id="chatFooter" class="chat-footer hidden">
-      <input type="text" Grant id="userInput" class="form-control" placeholder="আপনার প্রশ্ন লিখুন..." autocomplete="off">
-      <button id="sendBtn" class="btn">
-        <i class="fas fa-paper-plane"></i>
-      </button>
+      <input type="text" id="userInput" placeholder="আপনার প্রশ্ন লিখুন..." autocomplete="off">
+      <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
 
-  <div class="powered-by">
-    shaifly.com • MD ABU TALHA
-  </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="powered-by">shaifly.com • MD ABU TALHA</div>
 
   <script>
     const API_KEY = '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';
     const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
     const MODEL = 'llama-3.1-8b-instant';
 
-    const frontPage = document.getElementById('frontPage');
-    const chatBody = document.getElementById('chatBody');
-    const chatFooter = document.getElementById('chatFooter');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const themeToggle = document.getElementById('themeToggle');
-    const backHome = document.getElementById('backHome');
+    const elements = {
+      scrollContainer: document.getElementById('scrollContainer'),
+      chatBody: document.getElementById('chatBody'),
+      chatFooter: document.getElementById('chatFooter'),
+      userInput: document.getElementById('userInput'),
+      sendBtn: document.getElementById('sendBtn'),
+      themeToggle: document.getElementById('themeToggle'),
+      backHome: document.getElementById('backHome')
+    };
 
     let currentCharacter = null;
     let conversation = [];
     let characterImage = '';
+    let typingTimer = null;
 
     const characters = {
-      ibn_khaldun: { 
-        name: 'ইবনে খালদুন', 
-        img: 'Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg', 
-        prompt: 'You are Ibn Khaldun. Wise, spiritual, Islamic scholar.' 
-      },
-      einstein: { 
-        name: 'আলবার্ট আইনস্টাইন', 
-        img: 'Image/dreamina-2025-11-11-4854-Albert Einestine.jpeg', 
-        prompt: 'You are Albert Einstein. Curious, scientific, explain simply.' 
-      },
-      nazrul: { 
-        name: 'কাজী নজরুল ইসলাম', 
-        img: 'Image/download (18).jpeg', 
-        prompt: 'You are Kazi Nazrul Islam. Poetic, rebellious, inspiring.' 
-      }
+      ibn_khaldun: { name: 'ইবনে খালদুন', img: './Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg', prompt: 'You are Ibn Khaldun. Wise Islamic scholar.' },
+      einstein: { name: 'আলবার্ট আইনস্টাইন', img: './Image/dreamina-2025-11-11-4854-Albert Einestine.jpeg', prompt: 'You are Albert Einstein. Explain science simply.' },
+      nazrul: { name: 'কাজী নজরুল', img: './Image/download (18).jpeg', prompt: 'You are Kazi Nazrul. Poetic and bold.' },
+      tagore: { name: 'রবীন্দ্রনাথ ঠাকুর', img: './Image/Rabindranath_Tagore.jpg', prompt: 'You are Rabindranath Tagore. Deep and poetic.' },
+      tesla: { name: 'নিকোলা টেসলা', img: './Image/9a8705edec069075e76304473332db21.jpg', prompt: 'You are Nikola Tesla. Visionary inventor.' }
     };
 
-    function selectCharacter(char) {
-      currentCharacter = char;
-      const data = characters[char];
-      characterImage = data.img;
+    function selectCharacter(id) {
+      const c = characters[id];
+      currentCharacter = id;
+      characterImage = c.img;
 
-      frontPage.classList.add('hidden');
-      chatBody.classList.remove('hidden');
-      chatFooter.classList.remove('hidden');
-      backHome.classList.remove('hidden');
+      elements.scrollContainer.classList.add('hidden');
+      elements.chatBody.classList.remove('hidden');
+      elements.chatFooter.classList.remove('hidden');
+      elements.backHome.classList.remove('hidden');
 
       conversation = [
-        { role: 'system', content: `You are ${data.name}. Answer in Bangla. Keep it short. Suggest books from shaifly.com. ${data.prompt}` },
-        { role: 'assistant', content: `হ্যালো! আমি ${data.name}। কী জানতে চান?` }
+        { role: 'system', content: `You are ${c.name}. Answer in Bengali. Keep short. Suggest books from shaifly.com. ${c.prompt}` },
+        { role: 'assistant', content: `হ্যালো! আমি ${c.name}। কী জানতে চান?` }
       ];
 
-      addMessage(`হ্যালো! আমি ${data.name}। কী জানতে চান?`, 'bot');
-      userInput.focus();
+      addMessage(`হ্যালো! আমি ${c.name}। কী জানতে চান?`, 'bot');
+      elements.userInput.focus();
     }
 
     function goHome() {
-      chatBody.innerHTML = '';
-      chatBody.classList.add('hidden');
-      chatFooter.classList.add('hidden');
-      backHome.classList.add('hidden');
-      frontPage.classList.remove('hidden');
+      elements.chatBody.innerHTML = '';
+      elements.chatBody.classList.add('hidden');
+      elements.chatFooter.classList.add('hidden');
+      elements.backHome.classList.add('hidden');
+      elements.scrollContainer.classList.remove('hidden');
       conversation = [];
-      currentCharacter = null;
+      if (typingTimer) clearInterval(typingTimer);
     }
 
-    // Theme Toggle - Fully Fixed
-    themeToggle.addEventListener('click', () => {
+    // Theme
+    elements.themeToggle.addEventListener('click', () => {
       const isDark = document.documentElement.dataset.theme === 'dark';
       document.documentElement.dataset.theme = isDark ? '' : 'dark';
-      themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+      elements.themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
     });
 
-    sendBtn.addEventListener('click', sendMessage);
-    userInput.addEventListener('keypress', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        sendMessage();
-      }
+    // Send
+    elements.sendBtn.addEventListener('click', sendMessage);
+    elements.userInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') sendMessage();
     });
 
     async function sendMessage() {
-      const msg = userInput.value.trim();
-      if (!msg) return;
-      addMessage(msg, 'user');
-      userInput.value = '';
+      const text = elements.userInput.value.trim();
+      if (!text) return;
+
+      addMessage(text, 'user');
+      elements.userInput.value = '';
       disableInput();
-      conversation.push({ role: 'user', content: msg });
+      conversation.push({ role: 'user', content: text });
+
       const typingId = showTyping();
 
       try {
-        const resp = await fetch(API_URL, {
+        const res = await fetch(API_URL, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: MODEL,
-            messages: conversation,
-            temperature: 0.7,
-            max_tokens: 1024
-          })
+          headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: MODEL, messages: conversation, temperature: 0.7, max_tokens: 1024 })
         });
-        const data = await resp.json();
-        const botMsg = data.choices[0].message.content;
+        const data = await res.json();
+        const reply = data.choices[0].message.content;
+
         removeTyping(typingId);
-        addMessage(botMsg, 'bot');
-        conversation.push({ role: 'assistant', content: botMsg });
-      } catch (err) {
+        typeMessage(reply, 'bot');
+        conversation.push({ role: 'assistant', content: reply });
+      } catch {
         removeTyping(typingId);
-        addMessage('দুঃখিত, সংযোগে সমস্যা।', 'bot');
+        addMessage('দুঃখিত, সার্ভারে সমস্যা।', 'bot');
       } finally {
         enableInput();
       }
     }
 
-    function addMessage(text, sender) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `message ${sender}`;
-      
-      if (sender === 'bot') {
-        msgDiv.innerHTML = `
-          <img src="${characterImage}" class="character-avatar" onerror="this.src='https://via.placeholder.com/58?text=?'">
-          <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
-        `;
-      } else {
-        msgDiv.innerHTML = `
-          <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
-        `;
-      }
-      chatBody.appendChild(msgDiv);
-      chatBody.scrollTop = chatBody.scrollHeight;
+    // Scroll
+    function scrollToBottom() {
+      setTimeout(() => {
+        elements.chatBody.scrollTop = elements.chatBody.scrollHeight;
+      }, 50);
     }
 
-    function showTyping() {
+    // Add Message (Instant)
+    function addMessage(text, sender) {
       const div = document.createElement('div');
-      div.className = 'message bot';
+      div.className = `message ${sender}`;
+      const bubble = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+      div.innerHTML = sender === 'bot'
+        ? `<img src="${characterImage}" class="character-avatar" onerror="this.src='https://via.placeholder.com/42?text=?'">${bubble}`
+        : bubble;
+      elements.chatBody.appendChild(div);
+      scrollToBottom();
+    }
+
+    // Type Message (ChatGPT-style)
+    function typeMessage(text, sender) {
+      const div = document.createElement('div');
+      div.className = `message ${sender}`;
+      div.innerHTML = `<img src="${characterImage}" class="character-avatar" onerror="this.src='https://via.placeholder.com/42?text=?'"><div class="message-bubble"></div>`;
+      elements.chatBody.appendChild(div);
+      const bubble = div.querySelector('.message-bubble');
+
+      const cleanText = text.replace(/\n/g, '\n'); // Let CSS handle \n
+      let i = 0;
+      typingTimer = setInterval(() => {
+        if (i < cleanText.length) {
+          bubble.textContent += cleanText[i];
+          i++;
+          scrollToBottom();
+        } else {
+          clearInterval(typingTimer);
+        }
+      }, 25);
+    }
+
+    // Safe HTML Escape
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Typing Indicator
+    function showTyping() {
+      removeTyping();
+      const div = document.createElement('div');
       div.id = 'typing';
-      div.innerHTML = `
-        <img src="${characterImage}" class="character-avatar" onerror="this.src='https://via.placeholder.com/58?text=?'">
-        <div class="typing-indicator"><span></span><span></span><span></span></div>
-      `;
-      chatBody.appendChild(div);
-      chatBody.scrollTop = chatBody.scrollHeight;
+      div.className = 'message bot';
+      div.innerHTML = `<img src="${characterImage}" class="character-avatar"><div class="typing-indicator"><span></span><span></span><span></span></div>`;
+      elements.chatBody.appendChild(div);
+      scrollToBottom();
       return div.id;
     }
 
@@ -507,23 +463,8 @@
       if (el) el.remove();
     }
 
-    function disableInput() {
-      userInput.disabled = true;
-      sendBtn.disabled = true;
-    }
-
-    function enableInput() {
-      userInput.disabled = false;
-      sendBtn.disabled = false;
-      userInput.focus();
-    }
-
-    // Auto-scroll on input focus
-    userInput.addEventListener('focus', () => {
-      setTimeout(() => {
-        chatBody.scrollTop = chatBody.scrollHeight;
-      }, 300);
-    });
+    function disableInput() { elements.userInput.disabled = elements.sendBtn.disabled = true; }
+    function enableInput() { elements.userInput.disabled = elements.sendBtn.disabled = false; elements.userInput.focus(); }
   </script>
 </body>
 </html>
