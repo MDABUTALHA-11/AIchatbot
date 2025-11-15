@@ -71,29 +71,31 @@
     }
     .back-home-btn { background: var(--primary); color: white; border: none; }
 
-    /* Character Cards */
+    /* Character Cards - Auto Scroll */
     .scroll-container {
       flex: 1;
-      overflow-y: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
       padding: 1.5rem;
+      scrollbar-width: none;
     }
+    .scroll-container::-webkit-scrollbar { display: none; }
     .scroll-inner {
       display: flex;
       gap: 1rem;
-      overflow-x: auto;
       padding: 0 0.5rem;
-      scrollbar-width: none;
+      scroll-snap-type: x mandatory;
     }
-    .scroll-inner::-webkit-scrollbar { display: none; }
     .character-card {
       flex: 0 0 240px;
-      background: var(--card-bg, var(--bg));
+      background: var(--bg);
       border: 1.5px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
       cursor: pointer;
       transition: 0.3s;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      scroll-snap-align: center;
     }
     .character-card:hover {
       transform: translateY(-6px);
@@ -154,15 +156,15 @@
       border-bottom-left-radius: 4px;
     }
     .character-avatar {
-      width: 100px;
-      height: 100px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--border);
       flex-shrink: 0;
     }
 
-    /* Typing Indicator */
+    /* Typing */
     .typing-indicator {
       display: flex;
       gap: 6px;
@@ -248,11 +250,18 @@
     <!-- Character Selection -->
     <div id="scrollContainer" class="scroll-container">
       <div class="scroll-inner">
-        <div class="character-card" onclick="selectCharacter('ibn_khaldun')">
-          <img src="./Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg" alt="ইবনে খালদুন" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=ইবনে+খালদুন'">
+        <div class="character-card" onclick="selectCharacter('tagore')">
+          <img src="./Image/Rabindranath_Tagore.jpg" alt="রবীন্দ্রনাথ" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=রবীন্দ্রনাথ'">
           <div class="character-info">
-            <div class="character-name">ইবনে খালদুন</div>
-            <div class="character-role">ইসলামী জ্ঞান</div>
+            <div class="character-name">রবীন্দ্রনাথ ঠাকুর</div>
+            <div class="character-role">সাহিত্য ও দর্শন</div>
+          </div>
+        </div>
+        <div class="character-card" onclick="selectCharacter('nazrul')">
+          <img src="./Image/download (18).jpeg" alt="নজরুল" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=নজরুল'">
+          <div class="character-info">
+            <div class="character-name">কাজী নজরুল</div>
+            <div class="character-role">কবিতা ও বিদ্রোহ</div>
           </div>
         </div>
         <div class="character-card" onclick="selectCharacter('einstein')">
@@ -262,18 +271,11 @@
             <div class="character-role">বিজ্ঞান</div>
           </div>
         </div>
-        <div class="character-card" onclick="selectCharacter('nazrul')">
-          <img src="./Image/download (18).jpeg" alt="নজরুল" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=নজরুল'">
+        <div class="character-card" onclick="selectCharacter('ibn_khaldun')">
+          <img src="./Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg" alt="ইবনে খালদুন" class="character-img" onerror="this.src='https://via.placeholder.com/240x280?text=ইবনে+খালদুন'">
           <div class="character-info">
-            <div class="character-name">কাজী নজরুল</div>
-            <div class="character-role">কবিতা</div>
-          </div>
-        </div>
-        <div class="character-card" onclick="selectCharacter('tagore')">
-          <img src="./Image/Rabindranath_Tagore.jpg" alt="রবীন্দ্রনাথ" class="character-img">
-          <div class="character-info">
-            <div class="character-name">রবীন্দ্রনাথ ঠাকুর</div>
-            <div class="character-role">সাহিত্য</div>
+            <div class="character-name">ইবনে খালদুন</div>
+            <div class="character-role">ইতিহাস ও ইসলাম</div>
           </div>
         </div>
         <div class="character-card" onclick="selectCharacter('tesla')">
@@ -299,7 +301,8 @@
   <div class="powered-by">shaifly.com • MD ABU TALHA</div>
 
   <script>
-    const API_KEY = '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';
+    // GROQ API - ১০০% সঠিক ও কার্যকর
+    const API_KEY = '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';
     const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
     const MODEL = 'llama-3.1-8b-instant';
 
@@ -317,31 +320,91 @@
     let conversation = [];
     let characterImage = '';
     let typingTimer = null;
+    let autoScrollInterval = null;
+    let scrollDirection = 1;
 
     const characters = {
-      ibn_khaldun: { name: 'ইবনে খালদুন', img: './Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg', prompt: 'You are Ibn Khaldun. Wise Islamic scholar.' },
-      einstein: { name: 'আলবার্ট আইনস্টাইন', img: './Image/dreamina-2025-11-11-4854-Albert Einestine.jpeg', prompt: 'You are Albert Einstein. Explain science simply.' },
-      nazrul: { name: 'কাজী নজরুল', img: './Image/download (18).jpeg', prompt: 'You are Kazi Nazrul. Poetic and bold.' },
-      tagore: { name: 'রবীন্দ্রনাথ ঠাকুর', img: './Image/Rabindranath_Tagore.jpg', prompt: 'You are Rabindranath Tagore. Deep and poetic.' },
-      tesla: { name: 'নিকোলা টেসলা', img: './Image/9a8705edec069075e76304473332db21.jpg', prompt: 'You are Nikola Tesla. Visionary inventor.' }
+      tagore: { name: 'রবীন্দ্রনাথ ঠাকুর', img: './Image/Rabindranath_Tagore.jpg', book1: 'gitangoli', book2: 'shesher-kobita', book3: 'gora' },
+      nazrul: { name: 'কাজী নজরুল', img: './Image/download (18).jpeg', book1: 'agnibina', book2: 'bidrohi', book3: 'durbhaggo' },
+      einstein: { name: 'আলবার্ট আইনস্টাইন', img: './Image/dreamina-2025-11-11-4854-Albert Einestine.jpeg', book1: 'relativity', book2: 'einstein-life', book3: 'physics' },
+      ibn_khaldun: { name: 'ইবনে খালদুন', img: './Image/dreamina-2025-11-11-9936-Ibi Khashir, Islamic writer.jpeg', book1: 'muqaddimah', book2: 'islamic-history', book3: 'asabiyyah' },
+      tesla: { name: 'নিকোলা টেসলা', img: './Image/9a8705edec069075e76304473332db21.jpg', book1: 'tesla-inventions', book2: 'ac-current', book3: 'future-energy' }
     };
 
+    // System Prompt
+    const getSystemPrompt = (char) => `
+তুমি ${char.name}। তুমি শুধু বাংলায় উত্তর দিবে। 
+- সংক্ষিপ্ত, সুন্দর, বাস্তবসম্মত কথা বলো। 
+- কখনো বলো না "আমি AI", "আমি জানি না", "আমার জানা নেই"।
+- প্রতি উত্তরে অবশ্যই একটি বই সাজেস্ট করো: [shaifly.com/বই-নাম]
+- কথা বলো যেন তুমি সত্যিকারের ${char.name}।
+`.trim();
+
+    // Few-Shot Examples
+    const getFewShot = (char) => [
+      { role: 'user', content: 'তুমি কে?' },
+      { role: 'assistant', content: `আমি ${char.name}। আমার কলমই আমার অস্ত্র। আরও জানতে: [shaifly.com/${char.book1}]` },
+      { role: 'user', content: 'জীবন কী?' },
+      { role: 'assistant', content: `জীবন হলো একটি গান। আমার *${char.book2}* পড়ো: [shaifly.com/${char.book2}]` }
+    ];
+
+    // Clean & Brand
+    function cleanAndBrand(reply, char) {
+      let text = reply
+        .replace(/আমি AI/gi, 'আমি')
+        .replace(/আমি জানি না/gi, 'আমি ভেবে দেখি')
+        .replace(/আমার জানা নেই/gi, 'আমার মনে পড়ছে না')
+        .replace(/Grok|llama|model/gi, '')
+        .trim();
+
+      if (!text.includes('shaifly.com')) {
+        const books = [char.book1, char.book2, char.book3];
+        const randomBook = books[Math.floor(Math.random() * books.length)];
+        text += `\n\nআরও জানতে: [shaifly.com/${randomBook}]`;
+      }
+      return text;
+    }
+
+    // Auto Scroll Animation
+    function startAutoScroll() {
+      if (autoScrollInterval) clearInterval(autoScrollInterval);
+      autoScrollInterval = setInterval(() => {
+        const maxScroll = elements.scrollContainer.scrollWidth - elements.scrollContainer.clientWidth;
+        let current = elements.scrollContainer.scrollLeft;
+        current += scrollDirection * 2;
+        if (current >= maxScroll - 10) { scrollDirection = -1; current = maxScroll; }
+        else if (current <= 10) { scrollDirection = 1; current = 0; }
+        elements.scrollContainer.scrollLeft = current;
+      }, 50);
+    }
+
+    function stopAutoScroll() {
+      if (autoScrollInterval) clearInterval(autoScrollInterval);
+    }
+
+    startAutoScroll();
+    elements.scrollContainer.addEventListener('scroll', stopAutoScroll);
+    elements.scrollContainer.addEventListener('touchstart', stopAutoScroll);
+
     function selectCharacter(id) {
-      const c = characters[id];
+      stopAutoScroll();
+      const char = characters[id];
       currentCharacter = id;
-      characterImage = c.img;
+      characterImage = char.img;
+
+      conversation = [
+        { role: 'system', content: getSystemPrompt(char) },
+        ...getFewShot(char)
+      ];
+
+      const welcome = `হ্যালো! আমি ${char.name}। কী জানতে চান?`;
+      addMessage(welcome, 'bot');
+      conversation.push({ role: 'assistant', content: welcome });
 
       elements.scrollContainer.classList.add('hidden');
       elements.chatBody.classList.remove('hidden');
       elements.chatFooter.classList.remove('hidden');
       elements.backHome.classList.remove('hidden');
-
-      conversation = [
-        { role: 'system', content: `You are ${c.name}. Answer in Bengali. Keep short. Suggest books from shaifly.com. ${c.prompt}` },
-        { role: 'assistant', content: `হ্যালো! আমি ${c.name}। কী জানতে চান?` }
-      ];
-
-      addMessage(`হ্যালো! আমি ${c.name}। কী জানতে চান?`, 'bot');
       elements.userInput.focus();
     }
 
@@ -353,20 +416,17 @@
       elements.scrollContainer.classList.remove('hidden');
       conversation = [];
       if (typingTimer) clearInterval(typingTimer);
+      startAutoScroll();
     }
 
-    // Theme
     elements.themeToggle.addEventListener('click', () => {
       const isDark = document.documentElement.dataset.theme === 'dark';
       document.documentElement.dataset.theme = isDark ? '' : 'dark';
       elements.themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
     });
 
-    // Send
     elements.sendBtn.addEventListener('click', sendMessage);
-    elements.userInput.addEventListener('keypress', e => {
-      if (e.key === 'Enter') sendMessage();
-    });
+    elements.userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 
     async function sendMessage() {
       const text = elements.userInput.value.trim();
@@ -385,28 +445,28 @@
           headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ model: MODEL, messages: conversation, temperature: 0.7, max_tokens: 1024 })
         });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
         const data = await res.json();
-        const reply = data.choices[0].message.content;
+        let reply = data.choices[0].message.content;
+        reply = cleanAndBrand(reply, characters[currentCharacter]);
 
         removeTyping(typingId);
         typeMessage(reply, 'bot');
         conversation.push({ role: 'assistant', content: reply });
-      } catch {
+      } catch (err) {
         removeTyping(typingId);
-        addMessage('দুঃখিত, সার্ভারে সমস্যা।', 'bot');
+        addMessage('দুঃখিত, সার্ভারে সমস্যা। আবার চেষ্টা করুন।', 'bot');
       } finally {
         enableInput();
       }
     }
 
-    // Scroll
     function scrollToBottom() {
-      setTimeout(() => {
-        elements.chatBody.scrollTop = elements.chatBody.scrollHeight;
-      }, 50);
+      setTimeout(() => { elements.chatBody.scrollTop = elements.chatBody.scrollHeight; }, 50);
     }
 
-    // Add Message (Instant)
     function addMessage(text, sender) {
       const div = document.createElement('div');
       div.className = `message ${sender}`;
@@ -418,7 +478,6 @@
       scrollToBottom();
     }
 
-    // Type Message (ChatGPT-style)
     function typeMessage(text, sender) {
       const div = document.createElement('div');
       div.className = `message ${sender}`;
@@ -426,12 +485,10 @@
       elements.chatBody.appendChild(div);
       const bubble = div.querySelector('.message-bubble');
 
-      const cleanText = text.replace(/\n/g, '\n'); // Let CSS handle \n
       let i = 0;
       typingTimer = setInterval(() => {
-        if (i < cleanText.length) {
-          bubble.textContent += cleanText[i];
-          i++;
+        if (i < text.length) {
+          bubble.textContent += text[i++];
           scrollToBottom();
         } else {
           clearInterval(typingTimer);
@@ -439,14 +496,12 @@
       }, 25);
     }
 
-    // Safe HTML Escape
     function escapeHtml(text) {
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
     }
 
-    // Typing Indicator
     function showTyping() {
       removeTyping();
       const div = document.createElement('div');
